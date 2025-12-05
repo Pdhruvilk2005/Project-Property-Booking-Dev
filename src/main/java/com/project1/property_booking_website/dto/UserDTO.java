@@ -1,6 +1,5 @@
-package com.project1.property_booking_website.model;
+package com.project1.property_booking_website.dto;
 
-import jakarta.transaction.UserTransaction;
 import lombok.Data;
 
 @Data

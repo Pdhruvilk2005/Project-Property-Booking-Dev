@@ -2,9 +2,8 @@ package com.project1.property_booking_website.controller;
 
 
 import com.project1.property_booking_website.dto.ResponseDTO;
-import com.project1.property_booking_website.jwt.JwtUtil;
 import com.project1.property_booking_website.model.User;
-import com.project1.property_booking_website.model.UserDTO;
+import com.project1.property_booking_website.dto.UserDTO;
 import com.project1.property_booking_website.service.UserServiceimpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +46,9 @@ public class UserController {
 
 
     @GetMapping()
-    public User getUser(@RequestHeader(name = "Authorization") String token) {
+    public Object getUser(@RequestHeader(name = "Authorization") String token) {
 
-        return userServiceimpl.getUserByEmail(token);
+        return userServiceimpl.getUser(token);
     }
 
 

@@ -2,10 +2,13 @@ package com.project1.property_booking_website.service;
 
 import com.project1.property_booking_website.dto.ResponseDTO;
 import com.project1.property_booking_website.model.User;
-import com.project1.property_booking_website.model.UserDTO;
+import com.project1.property_booking_website.dto.UserDTO;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
+@Service
 public interface UserService {
 
     List<User> getAllUsers();
@@ -18,5 +21,5 @@ public interface UserService {
 
     ResponseDTO deleteUser(String id);
 
-    User getUserByEmail(String email);
+    Object getUser(String email);
 }

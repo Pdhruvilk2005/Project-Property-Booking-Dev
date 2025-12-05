@@ -33,6 +33,9 @@ public class AuthServiceImpl implements  AuthService {
     @Override
     public ResponseDTO login(LoginRequest request) {
         Authentication auth = authManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        if(userRepository.findByEmail(request.getEmail()).get().getIs_deleted()) {
+            return new ResponseDTO(406, new Date(), null, "user is deleted");
+        }
         User user = userRepository.findByEmail(request.getEmail()).get();
         return new ResponseDTO(200, new Date(), jwtUtil.generateToken(user.getEmail(), user.getRole().name()), null);
     }
@@ -40,6 +43,9 @@ public class AuthServiceImpl implements  AuthService {
     @Override
     public ResponseDTO register(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            if(userRepository.findByEmail(user.getEmail()).get().getIs_deleted()) {
+                return new ResponseDTO(406, new Date(), null, "user is deleted");
+            }
             return new ResponseDTO(406, new Date(), null, "user is already register");
         } else {
             String encodedPassword = passwordEncoder.encode(user.getPassword());

@@ -3,7 +3,7 @@ package com.project1.property_booking_website.service;
 import com.project1.property_booking_website.dto.ResponseDTO;
 import com.project1.property_booking_website.jwt.JwtUtil;
 import com.project1.property_booking_website.model.User;
-import com.project1.property_booking_website.model.UserDTO;
+import com.project1.property_booking_website.dto.UserDTO;
 import com.project1.property_booking_website.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +37,9 @@ public class UserServiceimpl implements UserService{
     @Override
     public ResponseDTO createUser(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            if(userRepository.findByEmail(user.getEmail()).get().getIs_deleted()) {
+                return new ResponseDTO(406, new Date(), null, "user is deleted");
+            }
             return new ResponseDTO(200, new Date(), null, "user is already register");
         }
         String encodedPassword = passwordEncoder.encode(user.getPassword());
@@ -53,6 +56,9 @@ public class UserServiceimpl implements UserService{
         String validtoken = token.replace("Bearer ", "");
         String email = jwtUtil.extractUsername(validtoken);
         if (userRepository.findByEmail(email).isPresent()) {
+            if(userRepository.findByEmail(email).get().getIs_deleted()) {
+                return new ResponseDTO(406, new Date(), null, "user is deleted");
+            }
             User existingUser = userRepository.findByEmail(email).get();
             existingUser.setName(user.getName());
             existingUser.setPhone(user.getPhone());
@@ -70,6 +76,9 @@ public class UserServiceimpl implements UserService{
         String validtoken = token.replace("Bearer ", "");
         String email = jwtUtil.extractUsername(validtoken);
         if (userRepository.findByEmail(email).isPresent()) {
+            if(userRepository.findByEmail(email).get().getIs_deleted()) {
+                return new ResponseDTO(406, new Date(), null, "user is deleted");
+            }
             User user = userRepository.findByEmail(email).get();
             user.setIs_deleted(true);
             userRepository.save(user);
@@ -80,12 +89,12 @@ public class UserServiceimpl implements UserService{
     }
 
     @Override
-    public User getUserByEmail(String token) {
-        String tokenValue=token.substring(7);
-//        log.info("tokenValue: "+tokenValue);
+    public Object getUser(String token) {
 
-        String email = jwtUtil.extractUsername(tokenValue);
-//        log.info("email from token: "+email);
+        String email = jwtUtil.extractUsername(token.substring(7));
+        if(userRepository.findByEmail(email).get().getIs_deleted()) {
+            return new ResponseDTO(406, new Date(), null, "user is deleted");
+        }
         return userRepository.findByEmail(email).orElse(null);
     }
 }
