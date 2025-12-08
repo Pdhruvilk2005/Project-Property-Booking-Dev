@@ -32,6 +32,7 @@ public class AddEmailHeaderFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
+
             throws ServletException, IOException {
 
         MutableHttpServletRequest mutableRequest = new MutableHttpServletRequest((HttpServletRequestWrapper) request);
