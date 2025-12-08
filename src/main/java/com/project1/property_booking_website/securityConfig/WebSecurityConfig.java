@@ -33,7 +33,7 @@ public class WebSecurityConfig {
         public SecurityConfig(JwtFilter jwtFilter, AuthUserDetailsService userDetailsService, AddEmailHeaderFilter addEmailHeaderFilter) {
             this.jwtFilter = jwtFilter;
             this.userDetailsService = userDetailsService;
-            this.addEmailHeaderFilter=addEmailHeaderFilter;
+            this.addEmailHeaderFilter = addEmailHeaderFilter;
 
         }
 
@@ -52,7 +52,7 @@ public class WebSecurityConfig {
                     )
 
                     .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-                    http.addFilterAfter(addEmailHeaderFilter,JwtFilter.class);
+            http.addFilterAfter(addEmailHeaderFilter, JwtFilter.class);
             return http.build();
         }
 

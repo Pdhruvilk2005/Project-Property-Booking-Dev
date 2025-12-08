@@ -10,10 +10,10 @@ import java.util.Optional;
 
 
 @Repository
-public interface UserRepository extends JpaRepository<User,Integer> {
+public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("SELECT u FROM User u WHERE u.is_deleted = false")
-    public List<User> findAllByIs_deletedFalse();
+    List<User> findAllByIs_deletedFalse();
 
-    public Optional<User> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 }

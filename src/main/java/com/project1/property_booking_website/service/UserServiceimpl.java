@@ -1,9 +1,9 @@
 package com.project1.property_booking_website.service;
 
 import com.project1.property_booking_website.dto.ResponseDTO;
+import com.project1.property_booking_website.dto.UserDTO;
 import com.project1.property_booking_website.jwt.JwtUtil;
 import com.project1.property_booking_website.model.User;
-import com.project1.property_booking_website.dto.UserDTO;
 import com.project1.property_booking_website.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class UserServiceimpl implements UserService{
+public class UserServiceimpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -33,11 +33,10 @@ public class UserServiceimpl implements UserService{
     }
 
 
-
     @Override
     public ResponseDTO createUser(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            if(userRepository.findByEmail(user.getEmail()).get().getIs_deleted()) {
+            if (userRepository.findByEmail(user.getEmail()).get().getIs_deleted()) {
                 return new ResponseDTO(406, new Date(), null, "user is deleted");
             }
             return new ResponseDTO(200, new Date(), null, "user is already register");
@@ -55,7 +54,7 @@ public class UserServiceimpl implements UserService{
     public ResponseDTO updateUser(String email, UserDTO user) {
 
         if (userRepository.findByEmail(email).isPresent()) {
-            if(userRepository.findByEmail(email).get().getIs_deleted()) {
+            if (userRepository.findByEmail(email).get().getIs_deleted()) {
                 return new ResponseDTO(406, new Date(), null, "user is deleted");
             }
             User existingUser = userRepository.findByEmail(email).get();
@@ -74,7 +73,7 @@ public class UserServiceimpl implements UserService{
     public ResponseDTO deleteUser(String email) {
 
         if (userRepository.findByEmail(email).isPresent()) {
-            if(userRepository.findByEmail(email).get().getIs_deleted()) {
+            if (userRepository.findByEmail(email).get().getIs_deleted()) {
                 return new ResponseDTO(406, new Date(), null, "user is deleted");
             }
             User user = userRepository.findByEmail(email).get();
@@ -87,12 +86,12 @@ public class UserServiceimpl implements UserService{
     }
 
     @Override
-    public Object getUser(String email) {
+    public ResponseDTO getUser(String email) {
 
 
-        if(userRepository.findByEmail(email).get().getIs_deleted()) {
+        if (userRepository.findByEmail(email).get().getIs_deleted()) {
             return new ResponseDTO(406, new Date(), null, "user is deleted");
         }
-        return userRepository.findByEmail(email).orElse(null);
+        return new ResponseDTO(406, new Date(), userRepository.findByEmail(email).orElse(null), null);
     }
 }

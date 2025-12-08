@@ -19,6 +19,7 @@ public class PropertyDTO {
     private int maxGuest;
     private int bathrooms;
     private int bedrooms;
+    private int minDays;
     private List<String> features;
     private List<Image> images;
     private List<CalendarEntry> calender;

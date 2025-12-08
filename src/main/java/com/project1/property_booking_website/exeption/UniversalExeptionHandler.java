@@ -16,7 +16,7 @@ public class UniversalExeptionHandler {
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseDTO handleDuplicateKeyException(DuplicateKeyException ex) {
         logger.error("Duplicate Key Exception: ", ex);
-        return new ResponseDTO(400, new Date(),null, "Duplicate key error: " + ex.getMessage());
+        return new ResponseDTO(400, new Date(), null, "Duplicate key error: " + ex.getMessage());
     }
 
 }

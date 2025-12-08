@@ -18,7 +18,7 @@ public class CalendarEntry {
     private boolean arrival;
     private boolean departure;
     private boolean available;
-    private String basePrice;
+    private Double basePrice;
     @LastModifiedDate
     private Date updatedDt;
     private int minStay;

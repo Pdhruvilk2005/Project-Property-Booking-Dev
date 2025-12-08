@@ -11,7 +11,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -19,15 +18,16 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Property  implements Persistable<String>{
+public class Property implements Persistable<String> {
 
     @Id
-    private String property_id;
+    private String propertyId;
     private String adminEmail;
     private String name;//add
     private String desc;//add
     private String address;//add
     private boolean isDelete;
+//    private int minDays;
 
     private List<String> features;//add
 
@@ -49,7 +49,7 @@ public class Property  implements Persistable<String>{
 
     @Override
     public @Nullable String getId() {
-        return property_id;
+        return propertyId;
     }
 
     @Override

@@ -2,8 +2,8 @@ package com.project1.property_booking_website.controller;
 
 
 import com.project1.property_booking_website.dto.ResponseDTO;
-import com.project1.property_booking_website.model.User;
 import com.project1.property_booking_website.dto.UserDTO;
+import com.project1.property_booking_website.model.User;
 import com.project1.property_booking_website.service.UserServiceimpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +53,7 @@ public class UserController {
 
 
     @PutMapping()
-    public ResponseDTO updateUser(@RequestHeader("email") String email , @RequestBody UserDTO user) {
+    public ResponseDTO updateUser(@RequestHeader("email") String email, @RequestBody UserDTO user) {
         return userServiceimpl.updateUser(email, user);
     }
 

@@ -3,14 +3,9 @@ package com.project1.property_booking_website.jwt;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -35,7 +30,7 @@ public class AddEmailHeaderFilter extends OncePerRequestFilter {
 
             throws ServletException, IOException {
 
-        MutableHttpServletRequest mutableRequest = new MutableHttpServletRequest((HttpServletRequestWrapper) request);
+        MutableHttpServletRequest mutableRequest = new MutableHttpServletRequest(request);
 
         // Get email from SecurityContext (after JWT validation)
         String authorizationHeader = request.getHeader("Authorization").substring(7);

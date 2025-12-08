@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface PropertyRepository extends MongoRepository<Property, String> {
 
-    public List<Property> findByAdminEmailAndIsDeleteFalse(String adminEmail);
+    List<Property> findByAdminEmailAndIsDeleteFalse(String adminEmail);
 
     @Query("{ 'adminEmail': ?0, 'property_id': ?1, 'isDelete': false }")
-    public List<Property> findByAdminEmailAndProperty_idAndIsDeleteFalse(String adminEmail, String propertyId);
+    List<Property> findByAdminEmailAndProperty_idAndIsDeleteFalse(String adminEmail, String propertyId);
 }
