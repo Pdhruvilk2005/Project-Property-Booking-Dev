@@ -46,19 +46,19 @@ public class UserController {
 
 
     @GetMapping()
-    public Object getUser(@RequestHeader(name = "Authorization") String token) {
+    public Object getUser(@RequestHeader("email") String email) {
 
-        return userServiceimpl.getUser(token);
+        return userServiceimpl.getUser(email);
     }
 
 
     @PutMapping()
-    public ResponseDTO updateUser(@RequestHeader(name = "Authorization") String token , @RequestBody UserDTO user) {
-        return userServiceimpl.updateUser(token, user);
+    public ResponseDTO updateUser(@RequestHeader("email") String email , @RequestBody UserDTO user) {
+        return userServiceimpl.updateUser(email, user);
     }
 
     @DeleteMapping()
-    public ResponseDTO deleteUser(@RequestHeader(name = "Authorization") String token) {
-        return userServiceimpl.deleteUser(token);
+    public ResponseDTO deleteUser(@RequestHeader("email") String email) {
+        return userServiceimpl.deleteUser(email);
     }
 }

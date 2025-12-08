@@ -23,23 +23,23 @@ public class PropertyController {
     }
 
     @PostMapping()
-    public ResponseDTO createProperty(@RequestHeader("userId") String email,@RequestBody Property property) {
+    public ResponseDTO createProperty(@RequestHeader("email") String email,@RequestBody Property property) {
         return propertyService.createProperty(property,email);
     }
 
     @PatchMapping("{propertyId}")
-    public ResponseDTO updateProperty(@RequestHeader(name = "Authorization") String token,@PathVariable String propertyId,@RequestBody PropertyDTO property) {
+    public ResponseDTO updateProperty(@RequestHeader("email") String email,@PathVariable String propertyId,@RequestBody PropertyDTO property) {
 
-        return propertyService.updateProperty(token,property,propertyId);
+        return propertyService.updateProperty(email,property,propertyId);
     }
 
     @DeleteMapping("{propertyId}")
-    public ResponseDTO deleteProperty(@RequestHeader(name = "Authorization") String token,@PathVariable String propertyId) {
-        return propertyService.deleteProperty(token, propertyId);
+    public ResponseDTO deleteProperty(@RequestHeader("email") String email,@PathVariable String propertyId) {
+        return propertyService.deleteProperty(email, propertyId);
     }
 
     @GetMapping
-    public ResponseDTO getProperty(@RequestHeader(name = "Authorization") String token) {
-        return propertyService.getAllProperties(token);
+    public ResponseDTO getProperty(@RequestHeader("email") String email) {
+        return propertyService.getAllProperties(email);
     }
 }

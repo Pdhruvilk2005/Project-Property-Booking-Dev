@@ -52,9 +52,8 @@ public class UserServiceimpl implements UserService{
 
 
     @Override
-    public ResponseDTO updateUser(String token, UserDTO user) {
-        String validtoken = token.replace("Bearer ", "");
-        String email = jwtUtil.extractUsername(validtoken);
+    public ResponseDTO updateUser(String email, UserDTO user) {
+
         if (userRepository.findByEmail(email).isPresent()) {
             if(userRepository.findByEmail(email).get().getIs_deleted()) {
                 return new ResponseDTO(406, new Date(), null, "user is deleted");
@@ -72,9 +71,8 @@ public class UserServiceimpl implements UserService{
     }
 
     @Override
-    public ResponseDTO deleteUser(String token) {
-        String validtoken = token.replace("Bearer ", "");
-        String email = jwtUtil.extractUsername(validtoken);
+    public ResponseDTO deleteUser(String email) {
+
         if (userRepository.findByEmail(email).isPresent()) {
             if(userRepository.findByEmail(email).get().getIs_deleted()) {
                 return new ResponseDTO(406, new Date(), null, "user is deleted");
@@ -89,9 +87,9 @@ public class UserServiceimpl implements UserService{
     }
 
     @Override
-    public Object getUser(String token) {
+    public Object getUser(String email) {
 
-        String email = jwtUtil.extractUsername(token.substring(7));
+
         if(userRepository.findByEmail(email).get().getIs_deleted()) {
             return new ResponseDTO(406, new Date(), null, "user is deleted");
         }

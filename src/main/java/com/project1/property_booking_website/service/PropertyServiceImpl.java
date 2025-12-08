@@ -40,11 +40,9 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public ResponseDTO updateProperty(String token, PropertyDTO property, String propertyId) {
+    public ResponseDTO updateProperty(String email, PropertyDTO property, String propertyId) {
 
-        String email = jwtUtil.extractUsername(token.substring(7));
 
-        log.info("email: {}", email);
 
         if (propertyRepository.findById(propertyId).isEmpty()) {
             return new ResponseDTO(404, new Date(), null, "Property not found");
@@ -89,11 +87,9 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public ResponseDTO deleteProperty(String token, String propertyId) {
+    public ResponseDTO deleteProperty(String email, String propertyId) {
 
-        String email = jwtUtil.extractUsername(token.substring(7));
 
-        log.info("email: {}", email);
 
         if (propertyRepository.findById(propertyId).isEmpty()) {
             return new ResponseDTO(404, new Date(), null, "Property not found");
@@ -110,10 +106,8 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public ResponseDTO getAllProperties(String token) {
-        String email = jwtUtil.extractUsername(token.substring(7));
+    public ResponseDTO getAllProperties(String email) {
 
-        log.info("email: {}", email);
         if (propertyRepository.findByAdminEmailAndIsDeleteFalse(email).isEmpty()) {
             return new ResponseDTO(404, new Date(), null, "Property not found");
         }
