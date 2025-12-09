@@ -12,5 +12,6 @@ public interface PropertyService {
 
     ResponseDTO deleteProperty(String token, String propertyId);
 
-    ResponseDTO getAllProperties(String token);
+
+    ResponseDTO getAllProperties(String email, String sortBy, String order, int page, int size);
 }

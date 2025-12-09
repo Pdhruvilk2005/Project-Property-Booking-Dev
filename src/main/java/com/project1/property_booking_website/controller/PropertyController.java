@@ -28,6 +28,7 @@ public class PropertyController {
 
     @PostMapping()
     public ResponseDTO createProperty(@RequestHeader("email") String email, @RequestBody Property property) {
+
         return propertyService.createProperty(property, email);
     }
 
@@ -43,8 +44,9 @@ public class PropertyController {
     }
 
     @GetMapping
-    public ResponseDTO getProperty(@RequestHeader("email") String email) {
-        return propertyService.getAllProperties(email);
+    public ResponseDTO getProperty(@RequestParam(required = false) String search, @RequestParam(required = false, defaultValue = "propertyId") String sortBy, @RequestParam(required = false, defaultValue = "ASC") String order, @RequestParam(defaultValue = "1", required = false) int page, @RequestParam(defaultValue = "5", required = false) int size) {
+        log.info(search + " " + sortBy + " " + order + " " + page + " " + size);
+        return propertyService.getAllProperties(search, sortBy, order, page, size);
     }
 
     @PostMapping("is-available/{propertyId}")

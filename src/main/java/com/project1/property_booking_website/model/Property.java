@@ -46,6 +46,7 @@ public class Property implements Persistable<String> {
 
     private List<Image> images; //add
     private List<CalendarEntry> calender;//add
+    private List<Booking> bookings;//add
 
     @Override
     public @Nullable String getId() {

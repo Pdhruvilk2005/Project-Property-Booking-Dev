@@ -1,6 +1,5 @@
 package com.project1.property_booking_website.service;
 
-import com.mongodb.DuplicateKeyException;
 import com.project1.property_booking_website.dto.PropertyDTO;
 import com.project1.property_booking_website.dto.ResponseDTO;
 import com.project1.property_booking_website.model.CalendarEntry;
@@ -8,15 +7,15 @@ import com.project1.property_booking_website.model.Property;
 import com.project1.property_booking_website.repository.PropertyRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -49,12 +48,9 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public ResponseDTO createProperty(Property property, String email) {
 
-        try {
-            property.setAdminEmail(email);
-            Property savedProperty = propertyRepository.insert(property);
-        } catch (DuplicateKeyException e) {
-            throw e;
-        }
+        property.setAdminEmail(email);
+        Property savedProperty = propertyRepository.insert(property);
+
         log.info(property.toString());
 
 
@@ -126,12 +122,18 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public ResponseDTO getAllProperties(String email) {
-
-        if (propertyRepository.findByAdminEmailAndIsDeleteFalse(email).isEmpty()) {
+    public ResponseDTO getAllProperties(String search, String sortBy, String order, int page, int size) {
+        Sort sort;
+        if (Objects.equals(order, "DESC")) {
+            sort = Sort.by(sortBy).ascending();
+        } else {
+            sort = Sort.by(sortBy).descending();
+        }
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        if (propertyRepository.findByIsDeleteFalseAndSearch(search, pageable).getContent().isEmpty()) {
             return new ResponseDTO(404, new Date(), null, "Property not found");
         }
-        return new ResponseDTO(200, new Date(), propertyRepository.findByAdminEmailAndIsDeleteFalse(email), null);
+        return new ResponseDTO(200, new Date(), propertyRepository.findByIsDeleteFalseAndSearch(search, pageable).getContent(), null);
     }
 
     public ResponseDTO is_available(String propertyId, Date from, Date to) {
@@ -148,32 +150,21 @@ public class PropertyServiceImpl implements PropertyService {
         LocalDate fromDate = from.toInstant().atZone(zone).toLocalDate();
         LocalDate toDate = to.toInstant().atZone(zone).toLocalDate();
 
-        List<CalendarEntry> range = calendar.stream()
-                .sorted(Comparator.comparing(entry ->
-                        entry.getDate().toInstant().atZone(zone).toLocalDate()
-                ))
-                .filter(entry -> {
-                    if (entry.getDate() == null) return false;
+        List<CalendarEntry> range = calendar.stream().sorted(Comparator.comparing(entry -> entry.getDate().toInstant().atZone(zone).toLocalDate())).filter(entry -> {
+            if (entry.getDate() == null) return false;
 
-                    LocalDate entryDate = entry.getDate()
-                            .toInstant()
-                            .atZone(zone)
-                            .toLocalDate();
+            LocalDate entryDate = entry.getDate().toInstant().atZone(zone).toLocalDate();
 
-                    return !entryDate.isBefore(fromDate) &&
-                            !entryDate.isAfter(toDate);
-                })
-                .toList();
+            return !entryDate.isBefore(fromDate) && !entryDate.isAfter(toDate);
+        }).toList();
 
 
-
-        int days= Period.between(fromDate, toDate).getDays();
+        int days = Period.between(fromDate, toDate).getDays();
         log.info(range.toString());
 
-        if ((days+1) != range.size()) {
+        if ((days + 1) != range.size()) {
             return new ResponseDTO(201, new Date(), "Property is not available", null);
         }
-
 
 
         if (range.isEmpty()) {
