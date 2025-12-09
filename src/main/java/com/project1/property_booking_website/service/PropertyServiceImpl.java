@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -165,7 +166,15 @@ public class PropertyServiceImpl implements PropertyService {
                 .toList();
 
 
+
+        int days= Period.between(fromDate, toDate).getDays();
         log.info(range.toString());
+
+        if ((days+1) != range.size()) {
+            return new ResponseDTO(201, new Date(), "Property is not available", null);
+        }
+
+
 
         if (range.isEmpty()) {
             return new ResponseDTO(200, new Date(), "Property is not available", null);
