@@ -1,10 +1,15 @@
 package com.project1.property_booking_website.service;
 
+//import com.project1.property_booking_website.dto.BookingDTO;
 import com.project1.property_booking_website.dto.ResponseDTO;
+import com.project1.property_booking_website.dto.UserBookingDTO;
 import com.project1.property_booking_website.dto.UserDTO;
 import com.project1.property_booking_website.jwt.JwtUtil;
+import com.project1.property_booking_website.model.Booking;
 import com.project1.property_booking_website.model.User;
+import com.project1.property_booking_website.repository.BookingRepository;
 import com.project1.property_booking_website.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,17 +17,20 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Service
 public class UserServiceimpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
 
     private final JwtUtil jwtUtil;
 
     @Autowired
-    public UserServiceimpl(UserRepository userRepository, JwtUtil jwtUtil, PasswordEncoder passwordEncoder) {
+    public UserServiceimpl(UserRepository userRepository, JwtUtil jwtUtil, PasswordEncoder passwordEncoder, BookingRepository bookingRepository) {
         this.userRepository = userRepository;
+        this.bookingRepository = bookingRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
@@ -36,14 +44,14 @@ public class UserServiceimpl implements UserService {
     @Override
     public ResponseDTO createUser(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            if (userRepository.findByEmail(user.getEmail()).get().getIs_deleted()) {
+            if (userRepository.findByEmail(user.getEmail()).get().getIsDeleted()) {
                 return new ResponseDTO(406, new Date(), null, "user is deleted");
             }
             return new ResponseDTO(200, new Date(), null, "user is already register");
         }
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
-        user.setIs_deleted(false);
+        user.setIsDeleted(false);
         userRepository.save(user);
         return new ResponseDTO(200, new Date(), "user register successfully", null);
 
@@ -54,7 +62,7 @@ public class UserServiceimpl implements UserService {
     public ResponseDTO updateUser(String email, UserDTO user) {
 
         if (userRepository.findByEmail(email).isPresent()) {
-            if (userRepository.findByEmail(email).get().getIs_deleted()) {
+            if (userRepository.findByEmail(email).get().getIsDeleted()) {
                 return new ResponseDTO(406, new Date(), null, "user is deleted");
             }
             User existingUser = userRepository.findByEmail(email).get();
@@ -73,11 +81,11 @@ public class UserServiceimpl implements UserService {
     public ResponseDTO deleteUser(String email) {
 
         if (userRepository.findByEmail(email).isPresent()) {
-            if (userRepository.findByEmail(email).get().getIs_deleted()) {
+            if (userRepository.findByEmail(email).get().getIsDeleted()) {
                 return new ResponseDTO(406, new Date(), null, "user is deleted");
             }
             User user = userRepository.findByEmail(email).get();
-            user.setIs_deleted(true);
+            user.setIsDeleted(true);
             userRepository.save(user);
             return new ResponseDTO(200, new Date(), "user deleted successfully", null);
         } else {
@@ -86,12 +94,19 @@ public class UserServiceimpl implements UserService {
     }
 
     @Override
-    public ResponseDTO getUser(String email) {
+    public ResponseDTO getUser(int id) {
 
-
-        if (userRepository.findByEmail(email).get().getIs_deleted()) {
+        if(userRepository.findById(id).isEmpty()){
+            return new ResponseDTO(404, new Date(), null, "user not found");
+        }
+        else if (userRepository.findById(id).get().getIsDeleted()) {
             return new ResponseDTO(406, new Date(), null, "user is deleted");
         }
-        return new ResponseDTO(406, new Date(), userRepository.findByEmail(email).orElse(null), null);
+        else{
+            User user=userRepository.findById(id).get();
+            List<Booking> bookingDTO=bookingRepository.findByUserEmail(user.getEmail());
+            log.info(user.toString()+"-----------------");
+            return new ResponseDTO(200, new Date(), new UserBookingDTO(user,bookingDTO), null);
+        }
     }
 }

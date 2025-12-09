@@ -26,7 +26,6 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Autowired
     public PropertyServiceImpl(PropertyRepository propertyRepository) {
-
         this.propertyRepository = propertyRepository;
     }
 
@@ -136,13 +135,57 @@ public class PropertyServiceImpl implements PropertyService {
         return new ResponseDTO(200, new Date(), propertyRepository.findByIsDeleteFalseAndSearch(search, pageable).getContent(), null);
     }
 
-    public ResponseDTO is_available(String propertyId, Date from, Date to) {
+    @Override
+    public double ChangingFlagsOnDates(String propertyId, Date from, Date to, boolean flag) {
 
-        if (propertyRepository.findById(propertyId).isEmpty()) {
+        double amount = 0;
+        Property property = propertyRepository.findById(propertyId).get();
+        List<CalendarEntry> calendar = property.getCalender();
+
+        ZoneId zone = ZoneId.systemDefault();
+
+        LocalDate fromDate = from.toInstant().atZone(zone).toLocalDate();
+        LocalDate toDate = to.toInstant().atZone(zone).toLocalDate();
+
+
+        for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
+            Date currentDate = Date.from(date.atStartOfDay(zone).toInstant());
+
+            for (CalendarEntry entry : calendar) {
+                LocalDate entryDate = entry.getDate().toInstant().atZone(zone).toLocalDate();
+                if (entryDate.equals(date)) {
+                    if (isSameDay(currentDate, from)) {
+                        entry.setArrival(flag);
+                        entry.setAvailable(flag);
+                        amount+=entry.getBasePrice();
+                    }
+                    else if (isSameDay(currentDate, to)) {
+                        entry.setDeparture(flag);
+                    }
+                    else {
+                    entry.setAvailable(flag);
+                    amount+=entry.getBasePrice();
+                    }
+                }
+            }
+        }
+
+        //
+        property.setCalender(calendar);
+        propertyRepository.save(property);
+        return amount;
+    }
+
+    @Override
+    public ResponseDTO isAvailable(String propertyId, Date from, Date to) {
+
+
+        Optional<Property> optionalProp = propertyRepository.findById(propertyId);
+        if (optionalProp.isEmpty()) {
             return new ResponseDTO(404, new Date(), null, "Property not found");
         }
 
-        Property property = propertyRepository.findById(propertyId).get();
+        Property property = optionalProp.get();
         List<CalendarEntry> calendar = property.getCalender();
 
         ZoneId zone = ZoneId.systemDefault();
@@ -163,18 +206,18 @@ public class PropertyServiceImpl implements PropertyService {
         log.info(range.toString());
 
         if ((days + 1) != range.size()) {
-            return new ResponseDTO(201, new Date(), "Property is not available", null);
+            return new ResponseDTO(403, new Date(), "Property is not available", null);
         }
 
 
         if (range.isEmpty()) {
-            return new ResponseDTO(200, new Date(), "Property is not available", null);
+            return new ResponseDTO(403, new Date(), "Property is not available", null);
         }
 
         // Check minimum stay
         long stayDays = daysBetween(from, to);
         if (range.get(0).getMinStay() > stayDays) {
-            return new ResponseDTO(200, new Date(), "you have to stay for minimum nights", null);
+            return new ResponseDTO(402, new Date(), "you have to stay for minimum nights", null);
         }
 
         boolean flag = true;
@@ -199,7 +242,11 @@ public class PropertyServiceImpl implements PropertyService {
         }
 
         if (flag) return new ResponseDTO(200, new Date(), "Property is available", null);
-        else return new ResponseDTO(200, new Date(), "Property is not available", null);
+        else return new ResponseDTO(403, new Date(), "Property is not available", null);
     }
 
+    @Override
+    public Property getPropety(String propertyId) {
+        return propertyRepository.findById(propertyId).get();
+    }
 }

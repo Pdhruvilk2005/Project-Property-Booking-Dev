@@ -44,7 +44,7 @@ public class PropertyController {
     }
 
     @GetMapping
-    public ResponseDTO getProperty(@RequestParam(required = false) String search, @RequestParam(required = false, defaultValue = "propertyId") String sortBy, @RequestParam(required = false, defaultValue = "ASC") String order, @RequestParam(defaultValue = "1", required = false) int page, @RequestParam(defaultValue = "5", required = false) int size) {
+    public ResponseDTO getProperty(@RequestParam(required = false,defaultValue = "") String search, @RequestParam(required = false, defaultValue = "propertyId") String sortBy, @RequestParam(required = false, defaultValue = "ASC") String order, @RequestParam(defaultValue = "1", required = false) int page, @RequestParam(defaultValue = "5", required = false) int size) {
         log.info(search + " " + sortBy + " " + order + " " + page + " " + size);
         return propertyService.getAllProperties(search, sortBy, order, page, size);
     }
@@ -56,7 +56,7 @@ public class PropertyController {
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate
     ) {
 
-        return propertyService.is_available(propertyId, startDate, endDate);
+        return propertyService.isAvailable(propertyId, startDate, endDate);
     }
 
 }

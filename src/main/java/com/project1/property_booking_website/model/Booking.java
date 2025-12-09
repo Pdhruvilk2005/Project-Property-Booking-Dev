@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -20,7 +21,7 @@ public class Booking {
     @Id
     private String bookId;
 
-    private String userId;
+    private String userEmail;
     private String propertyId;
 
     private LocalDate bookingDate;
@@ -31,19 +32,19 @@ public class Booking {
 
     private String paymentSystem;
 
-    private LocalDate from;
-    private LocalDate to;
+    private Date from;
+    private Date to;
 
     private String status;
 
-    private boolean cancel;
+    private Boolean cancel=false;
 
     @CreatedDate
-    private LocalDate createdDt;
+    private Date createdDt;
 
     @LastModifiedDate
-    private LocalDate updatedDt;
+    private Date updatedDt;
 
-    private int amount;
+    private Double amount;
 }
 

@@ -25,6 +25,7 @@ public class UserController {
     private final UserServiceimpl userServiceimpl;
 
 
+
     @Autowired
     UserController(UserServiceimpl userServiceimpl) {
         this.userServiceimpl = userServiceimpl;
@@ -45,10 +46,12 @@ public class UserController {
     }
 
 
-    @GetMapping()
-    public Object getUser(@RequestHeader("email") String email) {
+    @GetMapping("{id}")
+    public ResponseDTO getUser(@PathVariable("id") int id) {
 
-        return userServiceimpl.getUser(email);
+
+
+        return userServiceimpl.getUser(id);
     }
 
 

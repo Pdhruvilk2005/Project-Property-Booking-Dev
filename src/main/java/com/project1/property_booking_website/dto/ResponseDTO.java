@@ -14,6 +14,6 @@ public class ResponseDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Object data;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String error_response;
+    private String errorResponse;
 }
 

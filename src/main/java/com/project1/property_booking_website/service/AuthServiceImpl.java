@@ -36,7 +36,7 @@ public class AuthServiceImpl implements AuthService {
         if (userRepository.findByEmail(request.getEmail()).isEmpty()) {
             return new ResponseDTO(406, new Date(), null, "user is not registered");
         }
-        if (userRepository.findByEmail(request.getEmail()).get().getIs_deleted()) {
+        if (userRepository.findByEmail(request.getEmail()).get().getIsDeleted()) {
             return new ResponseDTO(406, new Date(), null, "user is deleted");
         }
         User user = userRepository.findByEmail(request.getEmail()).get();
@@ -46,14 +46,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseDTO register(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            if (userRepository.findByEmail(user.getEmail()).get().getIs_deleted()) {
+            if (userRepository.findByEmail(user.getEmail()).get().getIsDeleted()) {
                 return new ResponseDTO(406, new Date(), null, "user is deleted");
             }
             return new ResponseDTO(406, new Date(), null, "user is already register");
         } else {
             String encodedPassword = passwordEncoder.encode(user.getPassword());
             user.setPassword(encodedPassword);
-            user.setIs_deleted(false);
+            user.setIsDeleted(false);
             userRepository.save(user);
 
             return new ResponseDTO(200, new Date(), "user register successfully", null);

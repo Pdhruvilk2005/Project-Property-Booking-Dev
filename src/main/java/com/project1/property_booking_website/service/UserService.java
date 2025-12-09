@@ -18,5 +18,5 @@ public interface UserService {
 
     ResponseDTO deleteUser(String id);
 
-    Object getUser(String email);
+    ResponseDTO getUser(int id);
 }

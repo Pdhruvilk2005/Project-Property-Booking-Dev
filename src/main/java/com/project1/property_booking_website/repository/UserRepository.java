@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    @Query("SELECT u FROM User u WHERE u.is_deleted = false")
+    @Query("SELECT u FROM User u WHERE u.isDeleted = false")
     List<User> findAllByIs_deletedFalse();
 
     Optional<User> findByEmail(String email);
