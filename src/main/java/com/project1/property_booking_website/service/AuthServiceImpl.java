@@ -16,7 +16,7 @@ import java.util.Date;
 
 @Service
 @Slf4j
-public class AuthServiceImpl implements  AuthService {
+public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authManager;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
@@ -33,6 +33,12 @@ public class AuthServiceImpl implements  AuthService {
     @Override
     public ResponseDTO login(LoginRequest request) {
         Authentication auth = authManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        if (userRepository.findByEmail(request.getEmail()).isEmpty()) {
+            return new ResponseDTO(406, new Date(), null, "user is not registered");
+        }
+        if (userRepository.findByEmail(request.getEmail()).get().getIsDeleted()) {
+            return new ResponseDTO(406, new Date(), null, "user is deleted");
+        }
         User user = userRepository.findByEmail(request.getEmail()).get();
         return new ResponseDTO(200, new Date(), jwtUtil.generateToken(user.getEmail(), user.getRole().name()), null);
     }
@@ -40,11 +46,14 @@ public class AuthServiceImpl implements  AuthService {
     @Override
     public ResponseDTO register(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            if (userRepository.findByEmail(user.getEmail()).get().getIsDeleted()) {
+                return new ResponseDTO(406, new Date(), null, "user is deleted");
+            }
             return new ResponseDTO(406, new Date(), null, "user is already register");
         } else {
             String encodedPassword = passwordEncoder.encode(user.getPassword());
             user.setPassword(encodedPassword);
-            user.setIs_deleted(false);
+            user.setIsDeleted(false);
             userRepository.save(user);
 
             return new ResponseDTO(200, new Date(), "user register successfully", null);

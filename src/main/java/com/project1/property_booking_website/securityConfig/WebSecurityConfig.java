@@ -1,6 +1,7 @@
 package com.project1.property_booking_website.securityConfig;
 
 import com.project1.property_booking_website.exeption.CustomAccessDeniedHandler;
+import com.project1.property_booking_website.jwt.AddEmailHeaderFilter;
 import com.project1.property_booking_website.jwt.JwtFilter;
 import com.project1.property_booking_website.service.AuthUserDetailsService;
 import org.springframework.context.annotation.Bean;
@@ -25,11 +26,15 @@ public class WebSecurityConfig {
     public class SecurityConfig {
 
         private final JwtFilter jwtFilter;
+        private final AddEmailHeaderFilter addEmailHeaderFilter;
+
         private final AuthUserDetailsService userDetailsService;
 
-        public SecurityConfig(JwtFilter jwtFilter, AuthUserDetailsService userDetailsService) {
+        public SecurityConfig(JwtFilter jwtFilter, AuthUserDetailsService userDetailsService, AddEmailHeaderFilter addEmailHeaderFilter) {
             this.jwtFilter = jwtFilter;
             this.userDetailsService = userDetailsService;
+            this.addEmailHeaderFilter = addEmailHeaderFilter;
+
         }
 
         @Bean
@@ -45,8 +50,9 @@ public class WebSecurityConfig {
                     .exceptionHandling(ex ->
                             ex.accessDeniedHandler(new CustomAccessDeniedHandler())
                     )
-                    .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
+                    .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+            http.addFilterAfter(addEmailHeaderFilter, JwtFilter.class);
             return http.build();
         }
 

@@ -2,9 +2,8 @@ package com.project1.property_booking_website.controller;
 
 
 import com.project1.property_booking_website.dto.ResponseDTO;
-import com.project1.property_booking_website.jwt.JwtUtil;
+import com.project1.property_booking_website.dto.UserDTO;
 import com.project1.property_booking_website.model.User;
-import com.project1.property_booking_website.model.UserDTO;
 import com.project1.property_booking_website.service.UserServiceimpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +23,7 @@ public class UserController {
 //        return "hello";
 //    }
     private final UserServiceimpl userServiceimpl;
+
 
 
     @Autowired
@@ -46,20 +46,22 @@ public class UserController {
     }
 
 
-    @GetMapping()
-    public User getUser(@RequestHeader(name = "Authorization") String token) {
+    @GetMapping("{id}")
+    public ResponseDTO getUser(@PathVariable("id") int id) {
 
-        return userServiceimpl.getUserByEmail(token);
+
+
+        return userServiceimpl.getUser(id);
     }
 
 
     @PutMapping()
-    public ResponseDTO updateUser(@RequestHeader(name = "Authorization") String token , @RequestBody UserDTO user) {
-        return userServiceimpl.updateUser(token, user);
+    public ResponseDTO updateUser(@RequestHeader("email") String email, @RequestBody UserDTO user) {
+        return userServiceimpl.updateUser(email, user);
     }
 
     @DeleteMapping()
-    public ResponseDTO deleteUser(@RequestHeader(name = "Authorization") String token) {
-        return userServiceimpl.deleteUser(token);
+    public ResponseDTO deleteUser(@RequestHeader("email") String email) {
+        return userServiceimpl.deleteUser(email);
     }
 }

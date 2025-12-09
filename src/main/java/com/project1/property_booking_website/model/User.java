@@ -1,19 +1,17 @@
 // src/main/java/com/project1/property_booking_website/model/User.java
 package com.project1.property_booking_website.model;
 
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
-import jakarta.annotation.Nullable;
+//import com.project1.property_booking_website.dto.BookingDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -24,8 +22,6 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-
     @NotBlank
     @NotEmpty
     @NotNull
@@ -59,11 +55,13 @@ public class User {
     private Role role;
 
     @CreationTimestamp
-    private LocalDateTime created_dt;
+    private LocalDateTime createdDt;
 
     @UpdateTimestamp
-    private LocalDateTime updated_dt;
+    private LocalDateTime updatedDt;
 
-    private Boolean is_deleted;
+    private Boolean isDeleted;
+
+//    private List<BookingDTO> bookings;
 
 }

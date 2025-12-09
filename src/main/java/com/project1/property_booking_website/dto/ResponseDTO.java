@@ -3,6 +3,7 @@ package com.project1.property_booking_website.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
 import java.util.Date;
 
 @AllArgsConstructor
@@ -13,7 +14,6 @@ public class ResponseDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Object data;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String error_response;
-
+    private String errorResponse;
 }
 

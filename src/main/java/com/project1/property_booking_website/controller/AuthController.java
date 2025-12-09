@@ -23,7 +23,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseDTO register(@Validated @RequestBody  User user) {
+    public ResponseDTO register(@Validated @RequestBody User user) {
         return authServiceImpl.register(user);
     }
 
