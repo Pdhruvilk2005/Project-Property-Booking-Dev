@@ -174,7 +174,7 @@ public class PropertyServiceImpl implements PropertyService {
         // Check minimum stay
         long stayDays = daysBetween(from, to);
         if (range.get(0).getMinStay() > stayDays) {
-            return new ResponseDTO(200, new Date(), "you have to stay for minimum days", null);
+            return new ResponseDTO(200, new Date(), "you have to stay for minimum nights", null);
         }
 
         boolean flag = true;
